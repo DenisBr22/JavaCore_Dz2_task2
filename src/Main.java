@@ -7,7 +7,7 @@ public class Main {
         List<String> names = Arrays.asList("Jack", "Connor", "Harry", "George", "Samuel", "John");
         List<String> families = Arrays.asList("Evans", "Young", "Harris", "Wilson", "Davies", "Adamson", "Brown");
         Collection<Person> persons = new ArrayList<>();
-        for (int i = 0; i < 100; i++) {
+        for (int i = 0; i < 10_000_000; i++) {
             persons.add(new Person(
                     names.get(new Random().nextInt(names.size())),
                     families.get(new Random().nextInt(families.size())),
@@ -16,20 +16,25 @@ public class Main {
                     Education.values()[new Random().nextInt(Education.values().length)]));
         }
 
-        persons.stream()
+        Long counter = persons.stream()
                 .filter(person -> person.getAge() < 18)
                 .count();
+                System.out.println("Количество несовершеннолетних " + counter);
 
+        System.out.println("\n" + "Список призывников");
         persons.stream()
-                .filter(person -> person.getAge() >= 18 || person.getAge() < 27)
+                .filter(person ->  person.getAge() >= 18 && person.getAge() < 27 && person.getSex() == Sex.MAN)
                 .map(Person::getFamily)
-                .collect(Collectors.toList());
+                .collect(Collectors.toList())
+                .forEach(System.out::println);
 
+        System.out.println("\n" + "Список работоспособных людей с высшим образованием");
         persons.stream()
                 .filter(person -> person.getEducation() == Education.HIGHER)
-                .filter(person -> person.getAge() >= 18 && person.getAge() < 67)
+                .filter(person -> person.getAge() >= 18 && person.getAge() < 65)
                 .filter(person -> person.getSex() == Sex.WOMAN && person.getAge() < 60 || person.getSex() == Sex.MAN)
                 .sorted(Comparator.comparing(Person::getFamily))
-                .collect(Collectors.toList());
+                .collect(Collectors.toList())
+                .forEach(System.out::println);
     }
 }
